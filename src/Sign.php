@@ -1,7 +1,6 @@
 <?php
 
-
-namespace adamyu1024\FilecoinTx;
+namespace He426100\FilecoinTx;
 
 use deemru\Blake2b;
 use Elliptic\EC;
@@ -13,17 +12,9 @@ use SKleeschulte\Base32;
  */
 class Sign
 {
-
     protected $result = [];
     private $messageId;
     private $cid;
-
-    /**
-     * Sign constructor.
-     */
-    public function __construct()
-    {
-    }
 
     /**
      * 交易签名
@@ -35,20 +26,20 @@ class Sign
      */
     public function sign(array $transaction, string $privKey)
     {
-        $transaction['to'] = Bytes::addressToBytes($transaction['to']);
-        $transaction['from'] = Bytes::addressToBytes($transaction['from']);
+        $transaction['To'] = Bytes::addressToBytes($transaction['To']);
+        $transaction['From'] = Bytes::addressToBytes($transaction['From']);
 
         $this->_object($transaction);
-        $this->_number($transaction['version']);
-        $this->_hash($transaction['to']);
-        $this->_hash($transaction['from']);
-        $this->_number($transaction['nonce']);
-        $this->_stringNumber($transaction['value']);
-        $this->_number($transaction['gasLimit']);
-        $this->_stringNumber($transaction['gasFeeCap']);
-        $this->_stringNumber($transaction['gasPremium']);
-        $this->_number($transaction['method']);
-        $this->_hash($transaction['params'] ? bin2hex(base64_decode($transaction['params'])) : "");
+        $this->_number($transaction['Version']);
+        $this->_hash($transaction['To']);
+        $this->_hash($transaction['From']);
+        $this->_number($transaction['Nonce']);
+        $this->_stringNumber($transaction['Value']);
+        $this->_number($transaction['GasLimit']);
+        $this->_stringNumber($transaction['GasFeeCap']);
+        $this->_stringNumber($transaction['GasPremium']);
+        $this->_number($transaction['Method']);
+        $this->_hash($transaction['Params'] ? bin2hex(base64_decode($transaction['Params'])) : "");
         $unsignedMessage = implode("", $this->result);
         $blake2b = new Blake2b();
 
@@ -61,15 +52,15 @@ class Sign
         /**
          * 计算messageID以及mpoolPush返回的CID
          */
-        $unsignedMessageBytes = $this->toBytes($unsignedMessage);//将message转换为byte数组
+        $unsignedMessageBytes = $this->toBytes($unsignedMessage); //将message转换为byte数组
         $cid_bin = $blake2b->hash(hex2bin($unsignedMessage));
         $this->messageId = 'b' . strtolower(Base32::encodeByteStr(hex2bin("0171a0e40220" . strtolower(bin2hex($cid_bin))), true));
-        array_unshift($unsignedMessageBytes, 130);//将130添加进byte数组首位
-        array_push($unsignedMessageBytes, 88);//将88添加进byte数组末尾
-        $signatureBytes = $this->toBytes($signature);//将signature转换为byte数组
-        array_push($unsignedMessageBytes, count($signatureBytes) + 1);//将计算出来的数字添加进byte数组末尾
-        array_push($unsignedMessageBytes, 1);//将1添加进byte数组末尾
-        $mergeBytes = array_merge($unsignedMessageBytes, $signatureBytes);//合并两个byte数组
+        array_unshift($unsignedMessageBytes, 130); //将130添加进byte数组首位
+        array_push($unsignedMessageBytes, 88); //将88添加进byte数组末尾
+        $signatureBytes = $this->toBytes($signature); //将signature转换为byte数组
+        array_push($unsignedMessageBytes, count($signatureBytes) + 1); //将计算出来的数字添加进byte数组末尾
+        array_push($unsignedMessageBytes, 1); //将1添加进byte数组末尾
+        $mergeBytes = array_merge($unsignedMessageBytes, $signatureBytes); //合并两个byte数组
         $push_hash = $blake2b->hash(hex2bin(strtolower($this->toStr($mergeBytes))));
         $this->cid = 'b' . strtolower(Base32::encodeByteStr(hex2bin("0171a0e40220" . strtolower(bin2hex($push_hash))), true));
         return base64_encode(hex2bin($signature));
@@ -203,5 +194,4 @@ class Sign
     {
         return $this->cid;
     }
-
 }

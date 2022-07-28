@@ -1,8 +1,6 @@
 <?php
 
-
-namespace adamyu1024\FilecoinTx;
-
+namespace He426100\FilecoinTx;
 
 class Leb128
 {
@@ -130,7 +128,7 @@ class Leb128
 
         // Sign bit of byte is 2nd high order bit (0x40)
         if ($shift < $intSize && ($char & 0x40)) {
-            $x |= -(1 << $shift);
+            $x |= - (1 << $shift);
         }
 
         return $len;

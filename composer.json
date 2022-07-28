@@ -1,24 +1,35 @@
 {
-    "name": "adamyu1024/filecoin-tx",
+    "name": "he426100/filecoin-tx",
     "description": "Filecoin transaction library in PHP",
     "type": "library",
     "minimum-stability": "dev",
     "require": {
-        "php": "^7.4",
+        "php": "^7.4|^8.0",
         "skleeschulte/base32": "^0.0.2",
         "simplito/elliptic-php": "^1.0",
         "deemru/blake2b": "^1.0"
     },
     "autoload": {
         "psr-4": {
-            "adamyu1024\\FilecoinTx\\": "src"
+            "He426100\\FilecoinTx\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Test\\": "tests/"
         }
     },
     "license": "MIT",
     "authors": [
         {
-            "name": "Adam Yu",
-            "email": "adamyxt@outlook.com"
+            "name": "mrpzx001",
+            "email": "mrpzx001@gmail.com"
         }
-    ]
+    ],
+    "require-dev": {
+        "phpunit/phpunit": "9.5.x-dev"
+    },
+    "scripts": {
+        "test": "phpunit -c phpunit.xml --colors=always"
+    }
 }
